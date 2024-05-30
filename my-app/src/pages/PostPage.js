@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAuth } from '../components/Auth/AuthContext';
 
 const PostPage = () => {
@@ -16,24 +16,15 @@ const PostPage = () => {
     const fetchPostAndComments = async () => {
       try {
         setLoading(true);
-        console.log(userCategory)
+        console.log(userCategory);
 
-        // 게시물 가져오기
         let postEndpoint = '';
-        // 새 댓글 CURD
-        let commentEndPoint = '';
         if (userCategory === '자유게시판') {
           postEndpoint = `http://localhost:8080/api/jayuposts/${id}`;
-          commentEndPoint = `http://localhost:8080/api/jayucomments/${id}`
-
         } else if (userCategory === '공감게시판') {
           postEndpoint = `http://localhost:8080/api/gonggamposts/${id}`;
-          commentEndPoint = `http://localhost:8080/api/gonggamcomments/${id}`
-
         } else if (userCategory === 'bestposts') {
           postEndpoint = `http://localhost:8080/api/bestposts/${id}`;
-          commentEndPoint = `http://localhost:8080/api/bestcomments/${id}`
-
         } else {
           throw new Error(`Invalid category: ${category}`);
         }
@@ -44,17 +35,7 @@ const PostPage = () => {
         }
         const postData = await postResponse.json();
         setPost(postData);
-
-
-        // // 댓글 가져오기
-        // const commentResponse = await fetch(commentEndPoint);
-        // if (!commentResponse.ok) {
-        //   throw new Error('Failed to fetch comments');
-        // }
-        // const commentsData = await commentResponse.json();
-        // setComments(commentsData);
-
-
+        setComments(postData.comments);
 
       } catch (error) {
         console.error('Error fetching post and comments:', error);
@@ -68,19 +49,38 @@ const PostPage = () => {
   }, [category, id]);
 
   const handleAddComment = async () => {
-    // 댓글 추가 로직
+    try {
+      const response = await fetch(`http://localhost:8080/api/jayucomments/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: comment }),
+        credentials: 'include',
+      });
+      
+      console.log(response.ok)
+      if (!response.ok) {
+        throw new Error('Failed to add comment');
+      }
+
+      const newComment = await response.json();
+      setComments([...comments, newComment]); // 기존 댓글 리스트에 새 댓글 추가
+      setComment('');
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      setError(error.message);
+    }
   };
 
   const handleUpdatePost = async () => {
     // 포스트 수정 로직
     try {
-      // 수정할 내용을 담은 객체 생성
       const updatedPost = {
         title: '새로운 제목', // 수정된 제목
         content: '새로운 내용', // 수정된 내용
       };
 
-      // 수정 요청을 보낼 엔드포인트 설정
       let updateEndpoint = '';
       if (userCategory === '자유게시판') {
         updateEndpoint = `http://localhost:8080/api/jayuposts/${id}`;
@@ -92,7 +92,6 @@ const PostPage = () => {
         throw new Error(`Invalid category: ${category}`);
       }
 
-      // 수정 요청 보내기
       const response = await fetch(updateEndpoint, {
         method: 'PUT',
         headers: {
@@ -105,7 +104,6 @@ const PostPage = () => {
         throw new Error('Failed to update post');
       }
 
-      // 수정이 성공적으로 완료되면 해당 포스트를 다시 가져옴
       const updatedPostData = await response.json();
       setPost(updatedPostData);
     } catch (error) {
@@ -153,7 +151,6 @@ const PostPage = () => {
     return <div>게시물을 찾을 수 없습니다.</div>;
   }
 
-
   return (
     <div>
       <h1>{post.title}</h1>
@@ -170,13 +167,9 @@ const PostPage = () => {
         <button onClick={handleUpdatePost}>포스트 수정</button>
         <button onClick={handleDeletePost}>포스트 삭제</button>
         <div>
-          {post.comments.map((c) => (
+          {comments.map((c) => (
             <div key={c.id}>
               <p>{c.content}       {c.user.id}</p>
-              
-              {/* <p></p> */}
-
-
             </div>
           ))}
         </div>
