@@ -65,7 +65,11 @@ const MainPage = () => {
                     </button>
                 ))}
             </div>
-            {isLogin && <Link to="/PostWritePage">글쓰기</Link>}
+
+            {isLogin && (
+                <Link to={`/PostWritePage/${categoryEndpoint}`}>글쓰기</Link>
+            )}
+
             {loading ? (
                 <p>Loading...</p>
             ) : posts.length === 0 ? (

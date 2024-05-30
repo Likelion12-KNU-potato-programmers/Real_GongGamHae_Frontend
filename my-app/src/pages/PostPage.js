@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/Auth/AuthContext';
 
 const PostPage = () => {
   const { category, id } = useParams();
-  const { userCategory } = useAuth(); // useAuth로부터 category 받아오기
-
+  const { user, userCategory } = useAuth(); // useAuth to get user details and category
+  const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingCommentContent, setEditingCommentContent] = useState('');
+  const [warning, setWarning] = useState('');
 
   useEffect(() => {
     const fetchPostAndComments = async () => {
@@ -50,7 +53,17 @@ const PostPage = () => {
 
   const handleAddComment = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/jayucomments/${id}`, {
+      let commentsEndpoint = '';
+      if (userCategory === '자유게시판') {
+        commentsEndpoint = `http://localhost:8080/api/jayucomments/${id}`;
+      } else if (userCategory === '공감게시판') {
+        commentsEndpoint = `http://localhost:8080/api/gonggamcomments/${id}`;
+      } else if (userCategory === 'bestposts') {
+        commentsEndpoint = `http://localhost:8080/api/bestcomments/${id}`;
+      } else {
+        throw new Error(`Invalid category: ${category}`);
+      }
+      const response = await fetch(commentsEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +71,7 @@ const PostPage = () => {
         body: JSON.stringify({ content: comment }),
         credentials: 'include',
       });
-      
+
       console.log(response.ok)
       if (!response.ok) {
         throw new Error('Failed to add comment');
@@ -73,21 +86,15 @@ const PostPage = () => {
     }
   };
 
-  const handleUpdatePost = async () => {
-    // 포스트 수정 로직
+  const handleUpdateComment = async (commentId) => {
     try {
-      const updatedPost = {
-        title: '새로운 제목', // 수정된 제목
-        content: '새로운 내용', // 수정된 내용
-      };
-
       let updateEndpoint = '';
       if (userCategory === '자유게시판') {
-        updateEndpoint = `http://localhost:8080/api/jayuposts/${id}`;
+        updateEndpoint = `http://localhost:8080/api/jayucomments/${id}/${commentId}`;
       } else if (userCategory === '공감게시판') {
-        updateEndpoint = `http://localhost:8080/api/gonggamposts/${id}`;
+        updateEndpoint = `http://localhost:8080/api/gonggamcomments/${id}/${commentId}`;
       } else if (userCategory === 'bestposts') {
-        updateEndpoint = `http://localhost:8080/api/bestposts/${id}`;
+        updateEndpoint = `http://localhost:8080/api/bestcomments/${id}/${commentId}`;
       } else {
         throw new Error(`Invalid category: ${category}`);
       }
@@ -97,22 +104,93 @@ const PostPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updatedPost),
+        body: JSON.stringify({ content: editingCommentContent }),
+        credentials: 'include',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update post');
+        alert('수정 권한이 없습니다');
+        return;
       }
 
-      const updatedPostData = await response.json();
-      setPost(updatedPostData);
+      const updatedComment = await response.json();
+      setComments(comments.map((c) => (c.id === commentId ? updatedComment : c)));
+      setEditingCommentId(null);
+      setEditingCommentContent('');
     } catch (error) {
-      console.error('Error updating post:', error);
+      console.error('Error updating comment:', error);
+      setError(error.message);
     }
   };
 
+  const handleDeleteComment = async (commentId) => {
+    try {
+      let deleteEndpoint = '';
+      if (userCategory === '자유게시판') {
+        deleteEndpoint = `http://localhost:8080/api/jayucomments/${id}/${commentId}`;
+      } else if (userCategory === '공감게시판') {
+        deleteEndpoint = `http://localhost:8080/api/gonggamcomments/${id}/${commentId}`;
+      } else if (userCategory === 'bestposts') {
+        deleteEndpoint = `http://localhost:8080/api/bestcomments/${id}/${commentId}`;
+      } else {
+        throw new Error(`Invalid category: ${category}`);
+      }
+
+      const response = await fetch(deleteEndpoint, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        alert('삭제 권한이 없습니다');
+        return;
+      }
+
+      setComments(comments.filter((c) => c.id !== commentId));
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      setError(error.message);
+    }
+  };
+
+  const handleUpdatePost = async () => {
+    try {
+      let editPage = '';
+      if (userCategory === '자유게시판') {
+        editPage = `/PostWritePage/jayupost/${id}`;
+      } else if (userCategory === '공감게시판') {
+        editPage = `/PostWritePage/gonggampost/${id}`;
+      } else if (userCategory === 'bestposts') {
+        editPage = `/PostWritePage`;
+      } else {
+        console.error('Invalid category:', userCategory);
+        return;
+      }
+  
+      // Fetch the post to check the author
+      const postResponse = await fetch(editPage);
+      if (!postResponse.ok) {
+        throw new Error('Failed to fetch post for verification');
+      }
+      const postData = await postResponse.text();
+  
+      // Check if the logged-in user is the author
+      if (postData.authorId !== user.id) {
+        // alert('수정 권한이 없습니다');
+        return;
+      }
+  
+      // Navigate to the edit page
+      navigate(editPage);
+    } catch (error) {
+      console.error('Error updating post:', error);
+      alert('수정 권한이 없습니다');
+      return;
+    }
+  };
+  
+
   const handleDeletePost = async () => {
-    // 포스트 삭제 로직
     try {
       let deleteEndpoint = '';
       if (userCategory === '자유게시판') {
@@ -124,20 +202,36 @@ const PostPage = () => {
       } else {
         throw new Error(`Invalid category: ${category}`);
       }
-
+  
+      // Fetch the post to check the author
+      const postResponse = await fetch(deleteEndpoint);
+      if (!postResponse.ok) {
+        throw new Error('Failed to fetch post for verification');
+      }
+      const postData = await postResponse.json();
+  
+      // Check if the logged-in user is the author
+      if (postData.authorId !== user.id) {
+        setWarning('You can only delete your own posts');
+        return;
+      }
+  
+      // Proceed with deletion if the user is the author
       const response = await fetch(deleteEndpoint, {
         method: 'DELETE',
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to delete post');
       }
-
-      // 포스트가 성공적으로 삭제되면 이전 페이지로 이동하거나 특정한 액션을 수행할 수 있음
+  
+      navigate('/'); // Navigate to the home page after deletion
     } catch (error) {
-      console.error('Error deleting post:', error);
+      alert('삭제 권한이 없습니다');
+      return;
     }
   };
+  
 
   if (loading) {
     return <div>Loading...</div>;
@@ -169,7 +263,26 @@ const PostPage = () => {
         <div>
           {comments.map((c) => (
             <div key={c.id}>
-              <p>{c.content}       {c.user.id}</p>
+              {editingCommentId === c.id ? (
+                <div>
+                  <textarea
+                    value={editingCommentContent}
+                    onChange={(e) => setEditingCommentContent(e.target.value)}
+                    placeholder="댓글을 수정하세요"
+                  ></textarea>
+                  <button onClick={() => handleUpdateComment(c.id)}>저장</button>
+                  <button onClick={() => setEditingCommentId(null)}>취소</button>
+                </div>
+              ) : (
+                <div>
+                  <p>{c.content} {c.user.userid}</p>
+                  <button onClick={() => {
+                    setEditingCommentId(c.id);
+                    setEditingCommentContent(c.content);
+                  }}>수정</button>
+                  <button onClick={() => handleDeleteComment(c.id)}>삭제</button>
+                </div>
+              )}
             </div>
           ))}
         </div>

@@ -24,7 +24,12 @@ const App = () => {
           <Route path="/api/jayuposts/:id" element={<PostPage />} />
           <Route path="/api/gonggamposts/:id" element={<PostPage />} />
 
-          <Route path="/PostWritePage" element={<PostWritePage />} /> 
+          <Route path="/PostWritePage/jayuposts" element={<PostWritePage />} /> 
+          <Route path="/PostWritePage/gonggamposts" element={<PostWritePage />} /> 
+
+          <Route path="/PostWritePage/jayupost/:id" element={<PostWritePage />} /> 
+          <Route path="/PostWritePage/gonggampost/:id" element={<PostWritePage />} /> 
+
           <Route path='/LoginPage' element={<LoginPage />} />
           <Route path='/RegisterPage' element={<RegisterPage />} />
           <Route path='/MyPage' element={<MyPage />} />
