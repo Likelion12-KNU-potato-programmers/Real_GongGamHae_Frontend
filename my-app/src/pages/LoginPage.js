@@ -85,7 +85,7 @@ const LoginPage = () => {
                 <button type="submit">로그인</button>
             </form>
             <p style={{ color: 'red' }}>{errorMessage}</p>
-            <p>아직 계정이 없으신가요? <Link to="/registerpage">여기를 클릭하여 회원가입하세요</Link>.</p>
+            <p>아직 계정이 없으신가요? <Link to="/register">여기를 클릭하여 회원가입하세요</Link>.</p>
             {nickname && <p>환영합니다, {nickname}님!</p>}
         </div>
     );

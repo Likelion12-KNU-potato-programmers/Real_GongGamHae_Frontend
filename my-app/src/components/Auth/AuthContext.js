@@ -1,64 +1,91 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// AuthContext 생성
 const AuthContext = createContext(null);
 
-// useAuth 훅 정의
 export const useAuth = () => useContext(AuthContext);
 
-// AuthProvider 컴포넌트 정의
 const AuthProvider = ({ children }) => {
-    const [isLogin, setIsLogin] = useState(false);
-    const [userId, setUserId] = useState('');
-    const [nickname, setNickname] = useState('');
-    const [userCategory, setUserCategory] = useState(''); // 카테고리 상태 추가
     const navigate = useNavigate();
+    
+    const getInitialState = () => {
+        const loggedInUser = localStorage.getItem('user');
+        if (loggedInUser) {
+            const { userId, nickname, userCategory, isLogin } = JSON.parse(loggedInUser);
+            return {
+                isLogin,
+                userId,
+                nickname,
+                userCategory,
+            };
+        }
+        return {
+            isLogin: false,
+            userId: '',
+            nickname: '',
+            userCategory: '',
+        };
+    };
 
-    // login 함수 정의
-    const login = (userId, nickname) => {
-        setIsLogin(true);
-        setUserId(userId);
-        setNickname(nickname);
+    const [authState, setAuthState] = useState(getInitialState());
+
+    useEffect(() => {
+        const loggedInUser = localStorage.getItem('user');
+        if (loggedInUser) {
+            const { userId, nickname, userCategory, isLogin } = JSON.parse(loggedInUser);
+            setAuthState({
+                isLogin,
+                userId,
+                nickname,
+                userCategory,
+            });
+        }
+    }, []);
+
+    const login = (userId, nickname, userCategory) => {
+        const newState = {
+            userId,
+            nickname,
+            userCategory,
+            isLogin: true,
+        };
+        localStorage.setItem('user', JSON.stringify(newState));
+        setAuthState(newState);
         navigate('/');
     };
 
-    // 카테고리 상태 업데이트 함수 정의
-    const updateCategory = (category) => {
-        setUserCategory(category);
-        console.log(12123 + category)
-    }
-    
-    // logout 함수 정의
     const logout = async () => {
         try {
-            // 서버로 로그아웃 요청 보내기
-            const response = await fetch(`http://localhost:8080/mypage/logout`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: userId }),
+            localStorage.removeItem('user');
+            setAuthState({
+                isLogin: false,
+                userId: '',
+                nickname: '',
+                userCategory: '',
             });
-
-            if (response.ok) {
-                console.log('Logged out successfully from the server');
-            } else {
-                console.error('Failed to logout from the server');
-            }
+            navigate('/');
         } catch (error) {
-            console.error('Error logging out from the server:', error);
+            console.error('Error logging out:', error);
         }
-        setIsLogin(false);
     };
 
-    // AuthContext.Provider로 상태와 함수를 전달
+    const updateCategory = (category) => {
+        setAuthState((prevState) => {
+            const newState = {
+                ...prevState,
+                userCategory: category,
+            };
+            localStorage.setItem('user', JSON.stringify(newState)); // user 정보 업데이트
+            return newState;
+        });
+    };
+
+    
     return (
-        <AuthContext.Provider value={{ isLogin, userId, nickname, userCategory, login, logout, updateCategory, setNickname }}>
+        <AuthContext.Provider value={{ ...authState, login, logout, updateCategory }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-// AuthProvider를 기본 내보내기로 export
 export default AuthProvider;

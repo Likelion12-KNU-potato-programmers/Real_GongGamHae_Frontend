@@ -13,9 +13,19 @@ const PostWrite = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [initialized, setInitialized] = useState(false);
 
     useEffect(() => {
-        if (id) {
+        // Check login status and set initialized to true after checking
+        if (!isLogin) {
+            navigate('/loginpage');
+        } else {
+            setInitialized(true);
+        }
+    }, [isLogin, navigate]);
+
+    useEffect(() => {
+        if (id && initialized) {
             const fetchPost = async () => {
                 try {
                     let postEndpoint = '';
@@ -43,7 +53,7 @@ const PostWrite = () => {
 
             fetchPost();
         }
-    }, [id, userCategory]);
+    }, [id, userCategory, initialized]);
 
     const handleFileChange = (event) => {
         setImageFile(event.target.files[0]);
@@ -92,13 +102,13 @@ const PostWrite = () => {
         const formData = new FormData();
         const post = new Blob([JSON.stringify({ title: title, content: content })], {
             type: 'application/json',
-    });
-    formData.append('post', post);
-    formData.append('imageFile', imageFile);
+        });
+        formData.append('post', post);
+        formData.append('imageFile', imageFile);
         
         try {
             const response = await fetch(postEndpoint, {
-                method: 'POST',
+                method: method,
                 body: formData,
                 credentials: 'include',
                 headers: {
@@ -122,11 +132,6 @@ const PostWrite = () => {
             setLoading(false);
         }
     };
-
-    if (!isLogin) {
-        navigate('/login');
-        return null;
-    }
 
     return (
         <div>

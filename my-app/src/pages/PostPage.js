@@ -3,8 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/Auth/AuthContext';
 
 const PostPage = () => {
-  const { category, id } = useParams();
-  const { user, userCategory } = useAuth(); // useAuth to get user details and category
+  const { id } = useParams(); // 'category' 대신 'id'만 사용
+  const { isLogin, user, userCategory } = useAuth();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [comment, setComment] = useState('');
@@ -19,8 +19,7 @@ const PostPage = () => {
     const fetchPostAndComments = async () => {
       try {
         setLoading(true);
-        console.log(userCategory);
-
+        console.log(userCategory)
         let postEndpoint = '';
         if (userCategory === '자유게시판') {
           postEndpoint = `http://localhost:8080/api/jayuposts/${id}`;
@@ -29,9 +28,9 @@ const PostPage = () => {
         } else if (userCategory === 'bestposts') {
           postEndpoint = `http://localhost:8080/api/bestposts/${id}`;
         } else {
-          throw new Error(`Invalid category: ${category}`);
+          throw new Error(`Invalid category: ${userCategory}`);
         }
-
+  
         const postResponse = await fetch(postEndpoint);
         if (!postResponse.ok) {
           throw new Error('Failed to fetch post');
@@ -39,7 +38,7 @@ const PostPage = () => {
         const postData = await postResponse.json();
         setPost(postData);
         setComments(postData.comments);
-
+  
       } catch (error) {
         console.error('Error fetching post and comments:', error);
         setError(error.message);
@@ -47,11 +46,17 @@ const PostPage = () => {
         setLoading(false);
       }
     };
-
+  
     fetchPostAndComments();
-  }, [category, id]);
-
+  }, [id, userCategory]);
+  
+  
+  
   const handleAddComment = async () => {
+    if (!comment) {
+      setError('댓글 내용을 입력해주세요.');
+      return;
+    }
     try {
       let commentsEndpoint = '';
       if (userCategory === '자유게시판') {
@@ -61,7 +66,7 @@ const PostPage = () => {
       } else if (userCategory === 'bestposts') {
         commentsEndpoint = `http://localhost:8080/api/bestcomments/${id}`;
       } else {
-        throw new Error(`Invalid category: ${category}`);
+        throw new Error(`Invalid category: ${userCategory}`);
       }
       const response = await fetch(commentsEndpoint, {
         method: 'POST',
@@ -72,13 +77,12 @@ const PostPage = () => {
         credentials: 'include',
       });
 
-      console.log(response.ok)
       if (!response.ok) {
         throw new Error('Failed to add comment');
       }
 
       const newComment = await response.json();
-      setComments([...comments, newComment]); // 기존 댓글 리스트에 새 댓글 추가
+      setComments([...comments, newComment]);
       setComment('');
     } catch (error) {
       console.error('Error adding comment:', error);
@@ -87,6 +91,10 @@ const PostPage = () => {
   };
 
   const handleUpdateComment = async (commentId) => {
+    if (!editingCommentContent) {
+      setError('댓글 내용을 입력해주세요.');
+      return;
+    }
     try {
       let updateEndpoint = '';
       if (userCategory === '자유게시판') {
@@ -96,7 +104,7 @@ const PostPage = () => {
       } else if (userCategory === 'bestposts') {
         updateEndpoint = `http://localhost:8080/api/bestcomments/${id}/${commentId}`;
       } else {
-        throw new Error(`Invalid category: ${category}`);
+        throw new Error(`Invalid category: ${userCategory}`);
       }
 
       const response = await fetch(updateEndpoint, {
@@ -109,8 +117,7 @@ const PostPage = () => {
       });
 
       if (!response.ok) {
-        alert('수정 권한이 없습니다');
-        return;
+        throw new Error('Failed to update comment');
       }
 
       const updatedComment = await response.json();
@@ -133,7 +140,7 @@ const PostPage = () => {
       } else if (userCategory === 'bestposts') {
         deleteEndpoint = `http://localhost:8080/api/bestcomments/${id}/${commentId}`;
       } else {
-        throw new Error(`Invalid category: ${category}`);
+        throw new Error(`Invalid category: ${userCategory}`);
       }
 
       const response = await fetch(deleteEndpoint, {
@@ -142,8 +149,7 @@ const PostPage = () => {
       });
 
       if (!response.ok) {
-        alert('삭제 권한이 없습니다');
-        return;
+        throw new Error('Failed to delete comment');
       }
 
       setComments(comments.filter((c) => c.id !== commentId));
@@ -172,11 +178,11 @@ const PostPage = () => {
       if (!postResponse.ok) {
         throw new Error('Failed to fetch post for verification');
       }
-      const postData = await postResponse.text();
+      const postData = await postResponse.json();
   
       // Check if the logged-in user is the author
       if (postData.authorId !== user.id) {
-        // alert('수정 권한이 없습니다');
+        alert('수정 권한이 없습니다');
         return;
       }
   
@@ -185,10 +191,8 @@ const PostPage = () => {
     } catch (error) {
       console.error('Error updating post:', error);
       alert('수정 권한이 없습니다');
-      return;
     }
   };
-  
 
   const handleDeletePost = async () => {
     try {
@@ -200,7 +204,7 @@ const PostPage = () => {
       } else if (userCategory === 'bestposts') {
         deleteEndpoint = `http://localhost:8080/api/bestposts/${id}`;
       } else {
-        throw new Error(`Invalid category: ${category}`);
+        throw new Error(`Invalid category: ${userCategory}`);
       }
   
       // Fetch the post to check the author
@@ -227,11 +231,10 @@ const PostPage = () => {
   
       navigate('/'); // Navigate to the home page after deletion
     } catch (error) {
+      console.error('Error deleting post:', error);
       alert('삭제 권한이 없습니다');
-      return;
     }
   };
-  
 
   if (loading) {
     return <div>Loading...</div>;

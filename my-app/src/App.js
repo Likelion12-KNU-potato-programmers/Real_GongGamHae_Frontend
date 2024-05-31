@@ -20,9 +20,9 @@ const App = () => {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<MainPage />} />
-          
-          <Route path="/api/jayuposts/:id" element={<PostPage />} />
-          <Route path="/api/gonggamposts/:id" element={<PostPage />} />
+          <Route path="/api/:category/:id" element={<PostPage />} />
+          {/* <Route path="/api/jayuposts/:id" element={<PostPage />} />
+          <Route path="/api/gonggamposts/:id" element={<PostPage />} /> */}
 
           <Route path="/PostWritePage/jayuposts" element={<PostWritePage />} /> 
           <Route path="/PostWritePage/gonggamposts" element={<PostWritePage />} /> 
