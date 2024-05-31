@@ -80,9 +80,19 @@ const AuthProvider = ({ children }) => {
         });
     };
 
-    
+    const setNickname = (newNickname) => {
+        setAuthState((prevState) => ({
+            ...prevState,
+            nickname: newNickname,
+        }));
+        localStorage.setItem('user', JSON.stringify({
+            ...authState,
+            nickname: newNickname,
+        }));
+    };
+
     return (
-        <AuthContext.Provider value={{ ...authState, login, logout, updateCategory }}>
+        <AuthContext.Provider value={{ ...authState, login, logout, updateCategory, setNickname }}>
             {children}
         </AuthContext.Provider>
     );
