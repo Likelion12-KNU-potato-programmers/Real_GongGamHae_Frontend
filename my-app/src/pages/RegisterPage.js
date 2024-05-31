@@ -42,7 +42,7 @@ const RegisterPage = () => {
                 throw new Error(errorMessage);
             }
 
-            const data = await response.json();
+            const data = await response.text();
             console.log('Success:', data);
             alert('회원가입이 완료되었습니다.');
             navigate('/loginPage');

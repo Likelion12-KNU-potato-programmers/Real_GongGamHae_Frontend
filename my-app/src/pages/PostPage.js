@@ -4,7 +4,7 @@ import { useAuth } from '../components/Auth/AuthContext';
 
 const PostPage = () => {
   const { id } = useParams(); // 'category' 대신 'id'만 사용
-  const { isLogin, user, userCategory } = useAuth();
+  const { isLogin, userId, userCategory } = useAuth();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [comment, setComment] = useState('');
@@ -20,6 +20,7 @@ const PostPage = () => {
       try {
         setLoading(true);
         console.log(userCategory)
+        console.log(userId)
         let postEndpoint = '';
         if (userCategory === '자유게시판') {
           postEndpoint = `http://localhost:8080/api/jayuposts/${id}`;
@@ -51,7 +52,7 @@ const PostPage = () => {
   }, [id, userCategory]);
   
   
-  
+  // 댓글 작성
   const handleAddComment = async () => {
     if (!comment) {
       setError('댓글 내용을 입력해주세요.');
@@ -78,7 +79,8 @@ const PostPage = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add comment');
+        alert("권한이 없습니다.")
+        return 
       }
 
       const newComment = await response.json();
@@ -116,8 +118,10 @@ const PostPage = () => {
         credentials: 'include',
       });
 
+
       if (!response.ok) {
-        throw new Error('Failed to update comment');
+        alert("권한이 없습니다.")
+        return 
       }
 
       const updatedComment = await response.json();
@@ -149,8 +153,10 @@ const PostPage = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete comment');
+        alert("권한이 없습니다.")
+        return 
       }
+
 
       setComments(comments.filter((c) => c.id !== commentId));
     } catch (error) {
@@ -159,82 +165,118 @@ const PostPage = () => {
     }
   };
 
+
+
+
+
+  // 포스트 수정
   const handleUpdatePost = async () => {
     try {
-      let editPage = '';
-      if (userCategory === '자유게시판') {
-        editPage = `/PostWritePage/jayupost/${id}`;
-      } else if (userCategory === '공감게시판') {
-        editPage = `/PostWritePage/gonggampost/${id}`;
-      } else if (userCategory === 'bestposts') {
-        editPage = `/PostWritePage`;
-      } else {
-        console.error('Invalid category:', userCategory);
-        return;
-      }
-  
-      // Fetch the post to check the author
-      const postResponse = await fetch(editPage);
-      if (!postResponse.ok) {
-        throw new Error('Failed to fetch post for verification');
-      }
-      const postData = await postResponse.json();
-  
-      // Check if the logged-in user is the author
-      if (postData.authorId !== user.id) {
-        alert('수정 권한이 없습니다');
-        return;
-      }
-  
-      // Navigate to the edit page
-      navigate(editPage);
+        let editEndpoint = '';
+        if (userCategory === '자유게시판') {
+            editEndpoint = `http://localhost:8080/api/jayuposts/${id}`;
+        } else if (userCategory === '공감게시판') {
+            editEndpoint = `http://localhost:8080/api/gonggamposts/${id}`;
+        } else if (userCategory === 'BEST') {
+            editEndpoint = `/api/bestposts/${id}`;
+        } else {
+            console.error('Invalid category:', userCategory);
+            return;
+        }
+
+        const response = await fetch(editEndpoint, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch post for verification');
+        }
+
+        console.log(editEndpoint)
+        const postData = await response.json();
+        console.log(postData)
+        console.log(userId)
+
+        // Check if the logged-in user is the author
+        if (postData.userInfo.userid !== userId) {
+            alert("수정 권한이 없습니다.");
+            return;
+        }
+
+        // Navigate to the edit page
+        if (userCategory === '자유게시판') {
+          navigate(`/postWritePage/jayupost/${id}`);
+        } else if (userCategory === '공감게시판') {
+          navigate(`/postWritePage/gonggampost/${id}`);
+        } else if (userCategory === 'BEST') {
+            editEndpoint = `/api/bestposts/${id}`;
+        } else {
+            console.error('Invalid category:', userCategory);
+            return;
+        }
+        
+
     } catch (error) {
-      console.error('Error updating post:', error);
-      alert('수정 권한이 없습니다');
+        setError(error.message);
+        console.error('Error updating post:', error);
+    }
+};
+
+
+
+// 포스트 삭제
+  const handleDeletePost = async () => {
+    try {
+        let deleteEndpoint = '';
+        if (userCategory === '자유게시판') {
+            deleteEndpoint = `http://localhost:8080/api/jayuposts/${id}`;
+        } else if (userCategory === '공감게시판') {
+            deleteEndpoint = `http://localhost:8080/api/gonggamposts/${id}`;
+        } else if (userCategory === 'bestposts') {
+            deleteEndpoint = `http://localhost:8080/api/bestposts/${id}`;
+        } else {
+            throw new Error(`Invalid category: ${userCategory}`);
+        }
+
+        // Fetch the post to check the author
+        const postResponse = await fetch(deleteEndpoint);
+        if (!postResponse.ok) {
+            throw new Error('Failed to fetch post for verification');
+        }
+        const postData = await postResponse.json();
+
+        console.log(postData.userInfo.userid)
+        console.log(userId)
+        // Check if the logged-in user is the author
+        if (postData.userInfo.userid !== userId) {
+            alert('자신의 포스트만 삭제할 수 있습니다.');
+            return;
+        }
+
+        // Proceed with deletion if the user is the author
+        const response = await fetch(deleteEndpoint, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            // 삭제가 성공했을 경우 알림을 띄우고 삭제를 진행
+            alert('삭제되었습니다');
+            // 삭제 후 필요한 작업 수행
+            navigate('/'); // Navigate to the home page after deletion
+        } else {
+            // 삭제가 실패했을 경우 적절한 에러 처리
+            throw new Error('Failed to delete post');
+        }
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        alert('삭제 권한이 없습니다');
     }
   };
 
-  const handleDeletePost = async () => {
-    try {
-      let deleteEndpoint = '';
-      if (userCategory === '자유게시판') {
-        deleteEndpoint = `http://localhost:8080/api/jayuposts/${id}`;
-      } else if (userCategory === '공감게시판') {
-        deleteEndpoint = `http://localhost:8080/api/gonggamposts/${id}`;
-      } else if (userCategory === 'bestposts') {
-        deleteEndpoint = `http://localhost:8080/api/bestposts/${id}`;
-      } else {
-        throw new Error(`Invalid category: ${userCategory}`);
-      }
-  
-      // Fetch the post to check the author
-      const postResponse = await fetch(deleteEndpoint);
-      if (!postResponse.ok) {
-        throw new Error('Failed to fetch post for verification');
-      }
-      const postData = await postResponse.json();
-  
-      // Check if the logged-in user is the author
-      if (postData.authorId !== user.id) {
-        setWarning('You can only delete your own posts');
-        return;
-      }
-  
-      // Proceed with deletion if the user is the author
-      const response = await fetch(deleteEndpoint, {
-        method: 'DELETE',
-      });
-  
-      if (!response.ok) {
-        throw new Error('Failed to delete post');
-      }
-  
-      navigate('/'); // Navigate to the home page after deletion
-    } catch (error) {
-      console.error('Error deleting post:', error);
-      alert('삭제 권한이 없습니다');
-    }
-  };
 
   if (loading) {
     return <div>Loading...</div>;

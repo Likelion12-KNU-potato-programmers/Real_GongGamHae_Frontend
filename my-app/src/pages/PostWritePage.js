@@ -99,6 +99,8 @@ const PostWrite = () => {
             }
         }
 
+        console.log(postEndpoint)
+
         const formData = new FormData();
         const post = new Blob([JSON.stringify({ title: title, content: content })], {
             type: 'application/json',
@@ -117,10 +119,10 @@ const PostWrite = () => {
             });
 
             if (!response.ok) {
-                throw new Error(`Failed to ${id ? 'update' : 'create'} post`);
+                throw new Error(`Failed to ${id ? 'update' : '1create'} post`);
             }
 
-            const postData = await response.json();
+            const postData = await response.text();
             console.log('Post submitted successfully:', postData);
 
             setSuccess(`글이 성공적으로 ${id ? '수정' : '제출'}되었습니다.`);

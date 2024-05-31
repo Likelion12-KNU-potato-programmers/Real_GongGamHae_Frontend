@@ -8,7 +8,31 @@ const MyPage = () => {
     const navigate = useNavigate();
     const { isLogin, userId, nickname, logout, setNickname } = useAuth(); // useAuth로부터 필요한 값 가져오기
     const [newNickname, setNewNickname] = useState(''); // 새 닉네임 입력 상태 추가
+    const [userPosts, setUserPosts] = useState([]); // State to store user's posts
 
+
+
+    const fetchUserPosts = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/users/me/posts`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const posts = await response.json();
+                setUserPosts(posts);
+            } else {
+                console.error('Failed to fetch user posts');
+            }
+        } catch (error) {
+            console.error('Error fetching user posts:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserPosts();
+    }, []);
 
     // 로그아웃 버튼을 누를 시
     const handleLogout = () => {
@@ -109,7 +133,11 @@ const MyPage = () => {
             )}
 
             <h2>내가 쓴 글</h2>
-            {/* 내가 쓴 글 목록 출력 코드 */}
+            <ul>
+                {userPosts.map(post => (
+                    <li key={post.id}>{post.title}<p>{post.content}</p></li>
+                ))}
+            </ul>
             
             <button onClick={handleLogout}>로그아웃</button>
             

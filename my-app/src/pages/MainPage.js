@@ -40,8 +40,8 @@ const MainPage = () => {
             }
         };
 
-        fetchPosts();
-    }, [selectedCategory, updateCategory]);
+        fetchPosts(selectedCategory);
+    }, [selectedCategory]);
 
     const handleCategoryChange = (category) => {
         setSelectedCategory(category);

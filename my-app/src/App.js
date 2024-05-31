@@ -26,6 +26,7 @@ const App = () => {
 
           <Route path="/PostWritePage/jayuposts" element={<PostWritePage />} /> 
           <Route path="/PostWritePage/gonggamposts" element={<PostWritePage />} /> 
+          
 
           <Route path="/PostWritePage/jayupost/:id" element={<PostWritePage />} /> 
           <Route path="/PostWritePage/gonggampost/:id" element={<PostWritePage />} /> 
