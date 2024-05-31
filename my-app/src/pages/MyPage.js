@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/Auth/AuthContext'; // useAuth 가져오기
 
+import '../css/MyPage.css';
+
 const MyPage = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);    // 닉네임 옆의 연필버튼의 드롭다운 on off 버튼
     const dropdownRef = useRef(null);                               // 찾아봐야함
@@ -102,46 +104,40 @@ const MyPage = () => {
     }, []);
 
     return (
-        <div>
-            <h2>내 정보</h2>
-            {isLogin && (
-                <React.Fragment>
-                    <p>아이디: {userId}</p>
-                    <div style={{ position: 'relative', display: 'inline-block' }}>
-                        <p>닉네임: {nickname} <button onClick={toggleDropdown}>▼</button></p>
-                        {isDropdownOpen && (
-                            <div ref={dropdownRef} style={{
-                                position: 'absolute',
-                                right: 0,
-                                backgroundColor: '#f1f1f1',
-                                boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-                                zIndex: 1,
-                                padding: '10px'
-                            }}>
-                                <input
-                                    type="text"
-                                    value={newNickname}
-                                    onChange={(e) => setNewNickname(e.target.value)}
-                                    placeholder="새 닉네임"
-                                    style={{ marginBottom: '10px' }}
-                                />
-                                <button onClick={handleNicknameChange}>닉네임 변경</button>
-                            </div>
-                        )}
+        <div className="mypage-container">
+    <h2>내 정보</h2>
+    {isLogin && (
+        <div className="user-info">
+            <p>아이디: {userId}</p>
+            <div className="nickname-dropdown">
+                <p>닉네임: {nickname} <button onClick={toggleDropdown}>▼</button></p>
+                {isDropdownOpen && (
+                    <div ref={dropdownRef} className="dropdown-content">
+                        <input
+                            type="text"
+                            value={newNickname}
+                            onChange={(e) => setNewNickname(e.target.value)}
+                            placeholder="새 닉네임"
+                        />
+                        <button onClick={handleNicknameChange}>닉네임 변경</button>
                     </div>
-                </React.Fragment>
-            )}
-
-            <h2>내가 쓴 글</h2>
-            <ul>
-                {userPosts.map(post => (
-                    <li key={post.id}>{post.title}<p>{post.content}</p></li>
-                ))}
-            </ul>
-            
-            <button onClick={handleLogout}>로그아웃</button>
-            
+                )}
+            </div>
         </div>
+    )}
+
+    <h2>내가 쓴 글</h2>
+    <ul className="posts-list">
+        {userPosts.map(post => (
+            <li key={post.id}>
+                {post.title}
+                <p>{post.content}</p>
+            </li>
+        ))}
+    </ul>
+
+    <button className="logout-button" onClick={handleLogout}>로그아웃</button>
+</div>
     );
 };
 

@@ -1,7 +1,8 @@
-// 상단 헤더 고정 컴포넌트
 import React, { useEffect } from 'react';
 import { useAuth } from '../Auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
+
+import '../../css/Header.css';
 
 const Header = () => {
     const { isLogin, userId, nickname } = useAuth();
@@ -14,31 +15,24 @@ const Header = () => {
         }
     }, [isLogin, navigate]);
 
-    // 상단에 메인페이지 이동 버튼 , 추후 추가
-    const handleLogoClick = () => {
-        navigate('/');
-    };
-
     // 마이페이지 이동 버튼
     const handleMyPageClick = () => {
         navigate('/mypage');
     };
 
     return (
-        <header>
-            <div className="logo" onClick={handleLogoClick}>
-                감자
+        <header className="header">
+            <div className="header-left">
+                <span className="logo-text">감자</span>
             </div>
-            <nav>
-                {isLogin ? (
-                    <React.Fragment>
-                        <span>반갑습니다, {`${userId}(${nickname})님`} </span>
-                        <button onClick={handleMyPageClick}>마이페이지</button>
-                    </React.Fragment>
-                ) : (
-                    null // 로그인이 되어있지 않은 경우에는 아무것도 렌더링하지 않음
-                )}
-            </nav>
+            {isLogin && (
+                <nav className="header-right">
+                    <span>반갑습니다, {`${userId}(${nickname})님`} </span>
+                    <button onClick={handleMyPageClick} className="mypage-button">
+                        마이페이지
+                    </button>
+                </nav>
+            )}
         </header>
     );
 };

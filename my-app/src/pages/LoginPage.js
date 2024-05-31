@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/Auth/AuthContext'; // AuthContext에서 useAuth 훅을 가져옴
+import '../css/LoginPage.css'; // LoginPage.css 스타일시트 가져오기
 
 const LoginPage = () => {
     const { login } = useAuth(); // useAuth 훅을 사용하여 login 함수 가져오기
@@ -36,9 +37,6 @@ const LoginPage = () => {
                 console.log('로그인 성공:', responseData);
                 navigate('/');
             
-
-
-
                 // 정보 요청
                 const nicknameResponse = await fetch('http://localhost:8080/api/users/me', {
                     method: 'GET',
@@ -57,10 +55,6 @@ const LoginPage = () => {
                     console.error('닉네임 가져오기 실패:', nicknameResponse.statusText);
                     // 실패 시 적절한 오류 처리
                 }
-
-
-
-
             }
         } catch (error) {
             console.error('로그인 오류:', error.message);
@@ -68,21 +62,19 @@ const LoginPage = () => {
         }
     };
     
-    
-
     return (
-        <div>
+        <div className="login-container">
             <h2>로그인</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
+            <form className="login-form" onSubmit={handleSubmit}>
+                <div className="form-group">
                     <label>ID:</label>
                     <input type="text" value={userid} onChange={(e) => setUserid(e.target.value)} />
                 </div>
-                <div>
+                <div className="form-group">
                     <label>Password:</label>
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
-                <button type="submit">로그인</button>
+                <button className="login-button" type="submit">로그인</button>
             </form>
             <p style={{ color: 'red' }}>{errorMessage}</p>
             <p>아직 계정이 없으신가요? <Link to="/registerpage">여기를 클릭하여 회원가입하세요</Link>.</p>

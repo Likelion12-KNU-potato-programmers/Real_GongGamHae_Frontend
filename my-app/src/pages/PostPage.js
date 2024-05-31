@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/Auth/AuthContext';
 
+import Header from '../components/common/Header';
+
+import '../css/PostPage.css'; // CSS 파일 가져오기
+
+
 const PostPage = () => {
   const { id } = useParams(); // 'category' 대신 'id'만 사용
   const { isLogin, userId, userCategory } = useAuth();
@@ -291,11 +296,13 @@ const PostPage = () => {
   }
 
   return (
-    <div>
+    
+    <div className="post-container">
+      <Header/>
       <h1>{post.title}</h1>
       <p>{post.content}</p>
 
-      <div>
+      <div className="comment-container">
         <h2>댓글</h2>
         <textarea
           value={comment}
@@ -307,7 +314,7 @@ const PostPage = () => {
         <button onClick={handleDeletePost}>포스트 삭제</button>
         <div>
           {comments.map((c) => (
-            <div key={c.id}>
+            <div key={c.id} className="comment">
               {editingCommentId === c.id ? (
                 <div>
                   <textarea
@@ -315,17 +322,21 @@ const PostPage = () => {
                     onChange={(e) => setEditingCommentContent(e.target.value)}
                     placeholder="댓글을 수정하세요"
                   ></textarea>
-                  <button onClick={() => handleUpdateComment(c.id)}>저장</button>
-                  <button onClick={() => setEditingCommentId(null)}>취소</button>
+                  <div className="comment-buttons">
+                    <button className="edit-button" onClick={() => handleUpdateComment(c.id)}>저장</button>
+                    <button onClick={() => setEditingCommentId(null)}>취소</button>
+                  </div>
                 </div>
               ) : (
                 <div>
                   <p>{c.content} {c.user.userid}</p>
-                  <button onClick={() => {
-                    setEditingCommentId(c.id);
-                    setEditingCommentContent(c.content);
-                  }}>수정</button>
-                  <button onClick={() => handleDeleteComment(c.id)}>삭제</button>
+                  <div className="comment-buttons">
+                    <button className="edit-button" onClick={() => {
+                      setEditingCommentId(c.id);
+                      setEditingCommentContent(c.content);
+                    }}>수정</button>
+                    <button className="delete-button" onClick={() => handleDeleteComment(c.id)}>삭제</button>
+                  </div>
                 </div>
               )}
             </div>

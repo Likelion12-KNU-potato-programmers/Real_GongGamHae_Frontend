@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/common/Header';
 import { useAuth } from '../components/Auth/AuthContext';
-
+import '../css/MainPage.css'
 const categories = ['자유게시판', '공감게시판', 'BEST게시판'];
 
 const MainPage = () => {
-    const { isLogin, userCategory, updateCategory } = useAuth(); // useAuth에서 받아온 userCategory 및 업데이트 함수 사용
+    const { isLogin, userCategory, updateCategory } = useAuth();
     const [selectedCategory, setSelectedCategory] = useState('자유게시판');
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -33,8 +33,8 @@ const MainPage = () => {
                 setPosts(data);
                 setLoading(false);
                 setCategoryEndpoint(endpoint);
-                setEndpoint(endpoint); // endpoint 변수 업데이트
-                updateCategory(selectedCategory); // 카테고리 업데이트 함수 호출
+                setEndpoint(endpoint);
+                updateCategory(selectedCategory);
             } catch (error) {
                 console.error('Error fetching posts:', error);
             }
@@ -48,18 +48,15 @@ const MainPage = () => {
     };
 
     return (
-        <div>
+        <div className="main-container">
             <Header />
-            <h1>메인 페이지</h1>
-            <div style={{ marginBottom: '20px' }}>
+            <h1 className="main-title">메인 페이지</h1>
+            <div className="categories-container">
                 {categories.map((category) => (
                     <button
                         key={category}
                         onClick={() => handleCategoryChange(category)}
-                        style={{
-                            margin: '0 10px',
-                            fontWeight: selectedCategory === category ? 'bold' : 'normal',
-                        }}
+                        className={`category-button ${selectedCategory === category ? 'selected' : ''}`}
                     >
                         {category}
                     </button>
@@ -67,7 +64,7 @@ const MainPage = () => {
             </div>
 
             {isLogin && (
-                <Link to={`/PostWritePage/${categoryEndpoint}`}>글쓰기</Link>
+                <Link to={`/PostWritePage/${categoryEndpoint}`} className="write-link">글쓰기</Link>
             )}
 
             {loading ? (
@@ -75,20 +72,21 @@ const MainPage = () => {
             ) : posts.length === 0 ? (
                 <p>No posts found for selected category</p>
             ) : (
-                <ul>
+                <ul className="posts-list">
                     {posts.map((post) => (
-                        <li key={post.id}>
-                            {/* Link를 사용하여 PostPage로 이동할 때 선택된 category 정보를 함께 전달 */}
-                            <Link to={`/api/${categoryEndpoint}/${post.id}`}>
-                                <h2>{post.title}</h2>
-                                <p>{post.content}</p>
+                        <li key={post.id} className="post-item">
+                            <Link to={`/api/${categoryEndpoint}/${post.id}`} className="post-link">
+                                <h2 className="post-title">{post.title}</h2>
+                                <p className="post-content">{post.content}</p>
+                                <p className="post-author">작성자: {post.userInfo.userid}</p>
+                                <p className="post-comment-count">댓글 수: {post.commentCount}</p>
                             </Link>
                         </li>
                     ))}
                 </ul>
             )}
         </div>
-    );
+    );    
 };
 
 export default MainPage;
