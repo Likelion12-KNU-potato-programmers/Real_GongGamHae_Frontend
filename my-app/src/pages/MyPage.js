@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/Auth/AuthContext'; // useAuth 가져오기
+import Header from '../components/common/Header';           // header 가져오기
 
 import '../css/MyPage.css';
 
@@ -105,6 +106,7 @@ const MyPage = () => {
 
     return (
         <div className="mypage-container">
+        <Header />
     <h2>내 정보</h2>
     {isLogin && (
         <div className="user-info">
