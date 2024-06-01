@@ -96,7 +96,6 @@ const MyPage = () => {
         }
     };
 
-
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => {

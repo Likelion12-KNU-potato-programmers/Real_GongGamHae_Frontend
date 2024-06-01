@@ -28,11 +28,11 @@ const Header = () => {
 
     return (
         <header className="header">
-            <div className="header-left">
+            <div className="header-left" onClick={handleLogoClick}>
                 <span className="logo-text">공대 감성 판별해드립니다<br/>
                 줄여서 공.감.해.</span>
             </div>
-            <div className="header-center" onClick={handleLogoClick}>
+            <div className="header-center">
                 <span className="logo-text2">공감해... 공감하라고...</span>
             </div>
             {isLogin && (
