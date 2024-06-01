@@ -12,8 +12,7 @@ const MyPage = () => {
     const { isLogin, userId, nickname, logout, setNickname } = useAuth(); // useAuth로부터 필요한 값 가져오기
     const [newNickname, setNewNickname] = useState(''); // 새 닉네임 입력 상태 추가
     const [userPosts, setUserPosts] = useState([]); // State to store user's posts
-
-
+    const [profileImageUrl, setProfileImageUrl] = useState(''); // 프로필 이미지 URL 상태 추가
 
     const fetchUserPosts = async () => {
         try {
@@ -33,8 +32,27 @@ const MyPage = () => {
         }
     };
 
+    const fetchUserProfileImage = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/users/me/profile-image`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+    
+            if (response.ok) {
+                const { profileImageUrl } = await response.json();
+                setProfileImageUrl(profileImageUrl);
+            } else {
+                console.error('Failed to fetch profile image');
+            }
+        } catch (error) {
+            console.error('Error fetching profile image:', error);
+        }
+    };
+
     useEffect(() => {
         fetchUserPosts();
+        fetchUserProfileImage(); // 프로필 이미지를 가져오는 함수 호출
     }, []);
 
     // 로그아웃 버튼을 누를 시
@@ -47,8 +65,6 @@ const MyPage = () => {
         }
         navigate('/');
     };
-
-
 
     // 드롭다운 내에서 이름을 바꿀 시 변경될 코드
     const handleNicknameChange = async () => {
@@ -109,9 +125,10 @@ const MyPage = () => {
     <h2>내 정보</h2>
     {isLogin && (
         <div className="user-info">
+            {profileImageUrl && <img src={profileImageUrl} alt="Profile" className="profile-image" />} {/* 프로필 이미지 추가 */}
             <p>아이디: {userId}</p>
             <div className="nickname-dropdown">
-                <p>닉네임: {nickname} <button onClick={toggleDropdown}>▼</button></p>
+                <p>닉네임: {nickname} <button onClick={toggleDropdown}>✏️</button></p>
                 {isDropdownOpen && (
                     <div ref={dropdownRef} className="dropdown-content">
                         <input
