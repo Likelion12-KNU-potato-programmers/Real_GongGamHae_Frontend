@@ -20,6 +20,10 @@ const PostPage = () => {
   const [editingCommentContent, setEditingCommentContent] = useState('');
   const [warning, setWarning] = useState('');
 
+
+
+
+  // 최포 포스트 불러오기
   useEffect(() => {
     const fetchPostAndComments = async () => {
       try {
@@ -207,7 +211,7 @@ const PostPage = () => {
         console.log(userId)
 
         // Check if the logged-in user is the author
-        if (postData.userInfo.userid !== userId) {
+        if (postData.userInfo.userAccount !== userId) {
             alert("수정 권한이 없습니다.");
             return;
         }
@@ -257,7 +261,7 @@ const PostPage = () => {
         console.log(postData.userInfo.userid)
         console.log(userId)
         // Check if the logged-in user is the author
-        if (postData.userInfo.userid !== userId) {
+        if (postData.userInfo.userAccount !== userId) {
             alert('자신의 포스트만 삭제할 수 있습니다.');
             return;
         }
@@ -296,55 +300,58 @@ const PostPage = () => {
   }
 
   return (
-    
     <div className="post-container">
-      <Header/>
-      <h1>{post.title}</h1>
-      <p>{post.content}</p>
+        <Header />
+        <h1>{post.title}</h1>
+        <p>{post.content}</p>
+        {post.imageUrl && (
+        <img src={post.imageUrl} alt="Post" className="post-image" />
+        )}
 
-      <div className="comment-container">
-        <h2>댓글</h2>
-        <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="댓글을 입력하세요"
-        ></textarea>
-        <button onClick={handleAddComment}>댓글 추가</button>
-        <button onClick={handleUpdatePost}>포스트 수정</button>
-        <button onClick={handleDeletePost}>포스트 삭제</button>
-        <div>
-          {comments.map((c) => (
-            <div key={c.id} className="comment">
-              {editingCommentId === c.id ? (
-                <div>
-                  <textarea
-                    value={editingCommentContent}
-                    onChange={(e) => setEditingCommentContent(e.target.value)}
-                    placeholder="댓글을 수정하세요"
-                  ></textarea>
-                  <div className="comment-buttons">
-                    <button className="edit-button" onClick={() => handleUpdateComment(c.id)}>저장</button>
-                    <button onClick={() => setEditingCommentId(null)}>취소</button>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <p>{c.content} {c.user.userid}</p>
-                  <div className="comment-buttons">
-                    <button className="edit-button" onClick={() => {
-                      setEditingCommentId(c.id);
-                      setEditingCommentContent(c.content);
-                    }}>수정</button>
-                    <button className="delete-button" onClick={() => handleDeleteComment(c.id)}>삭제</button>
-                  </div>
-                </div>
-              )}
+        <div className="comment-container">
+            <h2>댓글</h2>
+            <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="댓글을 입력하세요"
+            ></textarea>
+            <button onClick={handleAddComment}>댓글 추가</button>
+            <button onClick={handleUpdatePost}>포스트 수정</button>
+            <button onClick={handleDeletePost}>포스트 삭제</button>
+            <div>
+                {comments.map((c) => (
+                    <div key={c.id} className="comment">
+                        <img src={c.user.profileImageUrl} alt="Profile" className="profile-image" />
+                        {editingCommentId === c.id ? (
+                            <div>
+                                <textarea
+                                    value={editingCommentContent}
+                                    onChange={(e) => setEditingCommentContent(e.target.value)}
+                                    placeholder="댓글을 수정하세요"
+                                ></textarea>
+                                <div className="comment-buttons">
+                                    <button className="edit-button" onClick={() => handleUpdateComment(c.id)}>저장</button>
+                                    <button onClick={() => setEditingCommentId(null)}>취소</button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <p>{c.content} {c.user.userid}</p>
+                                <div className="comment-buttons">
+                                    <button className="edit-button" onClick={() => {
+                                        setEditingCommentId(c.id);
+                                        setEditingCommentContent(c.content);
+                                    }}>수정</button>
+                                    <button className="delete-button" onClick={() => handleDeleteComment(c.id)}>삭제</button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                ))}
             </div>
-          ))}
         </div>
-      </div>
     </div>
-  );
+);
 };
 
 export default PostPage;

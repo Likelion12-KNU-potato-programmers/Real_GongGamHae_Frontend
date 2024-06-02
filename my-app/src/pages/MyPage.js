@@ -35,14 +35,17 @@ const MyPage = () => {
     // 유저 프로필 사진 불러오기
     const fetchUserProfileImage = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/users/me/profile-image`, {
+            const response = await fetch(`http://localhost:8080/api/users/me`, {
                 method: 'GET',
                 credentials: 'include'
             });
-    
+
+            console.log(response.ok)
             if (response.ok) {
-                const { profileImageUrl } = await response.json();
-                setProfileImageUrl(profileImageUrl);
+                const profileImageUrl = await response.json();
+                console.log(profileImageUrl.nickname, 111111);
+                
+                setProfileImageUrl(profileImageUrl.profileImage);
             } else {
                 console.error('Failed to fetch profile image');
             }
@@ -126,7 +129,11 @@ const MyPage = () => {
             <h2>내 정보</h2>
             {isLogin && (
                 <div className="user-info">
-                    {profileImageUrl && <img src={profileImageUrl} alt="Profile" className="profile-image" />} {/* 프로필 이미지 추가 */}
+                    {profileImageUrl ? (
+                        <img src={profileImageUrl} alt="Profile" className="profile-image" />
+                    ) : (
+                        <p>Loading profile image...</p>
+                    )} {/* 프로필 이미지 추가 */}
                     <div className="user-details">
                         <div className="nickname-container">
                             <p className="nickname">
@@ -151,18 +158,18 @@ const MyPage = () => {
             )}
 
 
-    <h2>내가 쓴 글</h2>
-    <ul className="posts-list">
-        {userPosts.map(post => (
-            <li key={post.id}>
-                {post.title}
-                <p>{post.content}</p>
-            </li>
-        ))}
-    </ul>
+            <h2>내가 쓴 글</h2>
+            <ul className="posts-list">
+                {userPosts.map(post => (
+                    <li key={post.id}>
+                        {post.title}
+                        <p>{post.content}</p>
+                    </li>
+                ))}
+            </ul>
 
-    <button className="logout-button" onClick={handleLogout}>로그아웃</button>
-</div>
+            <button className="logout-button" onClick={handleLogout}>로그아웃</button>
+        </div>
     );
 };
 

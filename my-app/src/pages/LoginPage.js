@@ -15,9 +15,8 @@ const LoginPage = () => {
         e.preventDefault();
     
         const formData = {
-            userid: userid,
+            userAccount: userid,
             password: password,
-            user: userid,
         };
     
         try {
@@ -46,11 +45,14 @@ const LoginPage = () => {
                     credentials: 'include' // 쿠키를 포함하여 요청
                 });
 
-                console.log(nicknameResponse.ok)
+                console.log(nicknameResponse)
                 if (nicknameResponse.ok) {
                     const nicknameData = await nicknameResponse.json(); // JSON으로 파싱
-                    login(userid, nicknameData.nickname)
+                    login(nicknameData.userAccount, nicknameData.nickname)
                     setNickname(nicknameData.nickname); // 닉네임을 상태로 설정
+                    setUserid(nicknameData.userAccount)
+                    console.log(nicknameData)
+
                 } else {
                     console.error('닉네임 가져오기 실패:', nicknameResponse.statusText);
                     // 실패 시 적절한 오류 처리
