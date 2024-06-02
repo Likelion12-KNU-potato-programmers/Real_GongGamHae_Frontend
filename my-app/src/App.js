@@ -8,6 +8,7 @@ import PostWritePage from './pages/PostWritePage';    // 게시글 쓰기 페이
 import LoginPage from './pages/LoginPage';    // 로그인 페이지
 import RegisterPage from './pages/RegisterPage';    // 회원가입 페이지
 import MyPage from './pages/MyPage';          // 마이페이지
+import UserPosts from './pages/UserPosts';
 
 // AuthProvider로 로그인 상태 관리
 import AuthProvider from './components/Auth/AuthContext';
@@ -21,6 +22,8 @@ const App = () => {
           <Route path="/api/:category/:id" element={<PostPage />} />
           {/* <Route path="/api/jayuposts/:id" element={<PostPage />} />
           <Route path="/api/gonggamposts/:id" element={<PostPage />} /> */}
+
+          <Route path="/userposts" element={<UserPosts />} />
 
           <Route path="/PostWritePage/jayuposts" element={<PostWritePage />} /> 
           <Route path="/PostWritePage/gonggamposts" element={<PostWritePage />} /> 

@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/Auth/AuthContext'; // useAuth 가져오기
 import Header from '../components/common/Header';           // header 가져오기
+import UserPosts from './UserPosts';                       // 내가 쓴 글 가져오기
+import UserCommentsPosts from './UserCommentsPosts';               // 내가 댓글 단 글 가져오기
 
 import '../css/MyPage.css';
 
@@ -122,6 +124,15 @@ const MyPage = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    // 내가 쓴 글 이동 버튼
+    const handleUserPosts = () => {
+        navigate('/userposts');
+    };
+
+    const handleUserCommentsPosts = () => {
+        navigate('/usercommentsposts');
+    }
     
     return (
         <div className="mypage-container">
@@ -157,8 +168,11 @@ const MyPage = () => {
                 </div>
             )}
 
+            <h2>커뮤니티</h2>
+            <p className='UserPosts' onClick={handleUserPosts}>내가 쓴 글</p>
+            <p className='UserPosts' onClick={handleUserCommentsPosts}>내가 댓글 단 글</p>
 
-            <h2>내가 쓴 글</h2>
+            {/*
             <ul className="posts-list">
                 {userPosts.map(post => (
                     <li key={post.id}>
@@ -167,6 +181,7 @@ const MyPage = () => {
                     </li>
                 ))}
             </ul>
+            */}
 
             <button className="logout-button" onClick={handleLogout}>로그아웃</button>
         </div>
