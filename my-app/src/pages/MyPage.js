@@ -32,6 +32,7 @@ const MyPage = () => {
         }
     };
 
+    // 유저 프로필 사진 불러오기
     const fetchUserProfileImage = async () => {
         try {
             const response = await fetch(`http://localhost:8080/api/users/me/profile-image`, {
@@ -118,31 +119,37 @@ const MyPage = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
-
+    
     return (
         <div className="mypage-container">
-        <Header />
-    <h2>내 정보</h2>
-    {isLogin && (
-        <div className="user-info">
-            {profileImageUrl && <img src={profileImageUrl} alt="Profile" className="profile-image" />} {/* 프로필 이미지 추가 */}
-            <p>아이디: {userId}</p>
-            <div className="nickname-dropdown">
-                <p>닉네임: {nickname} <button onClick={toggleDropdown}>✏️</button></p>
-                {isDropdownOpen && (
-                    <div ref={dropdownRef} className="dropdown-content">
-                        <input
-                            type="text"
-                            value={newNickname}
-                            onChange={(e) => setNewNickname(e.target.value)}
-                            placeholder="새 닉네임"
-                        />
-                        <button onClick={handleNicknameChange}>닉네임 변경</button>
+            <Header />
+            <h2>내 정보</h2>
+            {isLogin && (
+                <div className="user-info">
+                    {profileImageUrl && <img src={profileImageUrl} alt="Profile" className="profile-image" />} {/* 프로필 이미지 추가 */}
+                    <div className="user-details">
+                        <div className="nickname-container">
+                            <p className="nickname">
+                                닉네임: {nickname}&nbsp;&nbsp;
+                                <button onClick={toggleDropdown} className="edit-button">✏️</button>
+                            </p>
+                            {isDropdownOpen && (
+                                <div ref={dropdownRef} className="dropdown-content">
+                                    <input
+                                        type="text"
+                                        value={newNickname}
+                                        onChange={(e) => setNewNickname(e.target.value)}
+                                        placeholder="새 닉네임"
+                                    />
+                                    <button onClick={handleNicknameChange}>닉네임 변경</button>
+                                </div>
+                            )}
+                        </div>
+                        <p className="user-id">아이디: {userId}</p>
                     </div>
-                )}
-            </div>
-        </div>
-    )}
+                </div>
+            )}
+
 
     <h2>내가 쓴 글</h2>
     <ul className="posts-list">

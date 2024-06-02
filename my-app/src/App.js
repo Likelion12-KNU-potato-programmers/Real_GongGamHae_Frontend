@@ -9,10 +9,8 @@ import LoginPage from './pages/LoginPage';    // 로그인 페이지
 import RegisterPage from './pages/RegisterPage';    // 회원가입 페이지
 import MyPage from './pages/MyPage';          // 마이페이지
 
-
 // AuthProvider로 로그인 상태 관리
 import AuthProvider from './components/Auth/AuthContext';
-
 
 const App = () => {
   return (
@@ -39,5 +37,6 @@ const App = () => {
     </Router>
   );
 };
+
 
 export default App;
