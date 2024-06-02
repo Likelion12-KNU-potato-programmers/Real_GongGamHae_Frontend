@@ -80,6 +80,7 @@ const MainPage = () => {
                                 <p className="post-content">{post.content}</p>
                                 <p className="post-author">작성자: {post.userInfo.userid}</p>
                                 <p className="post-comment-count">댓글 수: {post.commentCount}</p>
+                                <p className='post-image'> <img src={post.imageUrl}/> </p>
                             </Link>
                         </li>
                     ))}
