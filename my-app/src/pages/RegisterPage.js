@@ -22,10 +22,10 @@ const RegisterPage = () => {
 
         const formData = new FormData();
         const user = JSON.stringify({
-            userid: id,
+            userAccount: id,
             password: password,
             confirmPassword: confirmPassword,
-            nickname: nickname
+            nickname: nickname,
         });
         formData.append('user', new Blob([user], { type: 'application/json' }));
         if (profileImage) {

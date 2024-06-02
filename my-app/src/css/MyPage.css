@@ -5,9 +5,11 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
+    text-align: center;
 }
 
 .user-info {
+    background-color: #f9f9f9;
     margin-bottom: 20px;
 }
 
@@ -83,3 +85,12 @@
 .logout-button:hover {
     background-color: #c82333;
 }
+
+.profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
