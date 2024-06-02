@@ -56,7 +56,17 @@ const PostPage = () => {
         setLoading(false);
       }
     };
-  
+
+    const likes = async () => {
+      
+    };
+    
+    const dislikes = async () => {
+
+    };
+
+    likes();
+    dislikes();
     fetchPostAndComments();
   }, [id, userCategory]);
   
@@ -237,6 +247,68 @@ const PostPage = () => {
 
 
 
+
+// 추천 핸들러
+const handleLike = async () => {
+  try {
+    // Send a request to your backend API to indicate that the post has been recommended
+    const response = await fetch(`http://localhost:8080/api/gonggamposts/${post.id}/like`, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+      },
+      credentials: 'include',
+    });
+
+    console.log(response.ok)
+    // Check if the recommendation was successful
+    if (response.ok) {
+      // Handle success
+      alert('포스트가 추천되었습니다.');
+    } else {
+      // Handle failure
+      // likes()
+      alert('포스트 추천에 실패했습니다.');
+    }
+  } catch (error) {
+    // Handle error
+    console.error('Error recommending post:', error);
+    alert('오류가 발생했습니다.');
+  }
+};
+
+// 비추천 핸들러
+const handleDisLike = async () => {
+  try {
+    // Send a request to your backend API to indicate that the post has been recommended
+    const response = await fetch(`http://localhost:8080/api/gonggamposts/${post.id}/dislike`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    });
+
+    // Check if the recommendation was successful
+    if (response.ok) {
+      // Handle success
+      // dislikes();
+      alert('포스트가 비추천되었습니다.');
+    } else {
+      // Handle failure
+      alert('포스트 비추천에 실패했습니다.');
+    }
+  } catch (error) {
+    // Handle error
+    console.error('Error recommending post:', error);
+    alert('오류가 발생했습니다.');
+  }
+};
+
+
+
+
+
 // 포스트 삭제
   const handleDeletePost = async () => {
     try {
@@ -299,59 +371,124 @@ const PostPage = () => {
     return <div>게시물을 찾을 수 없습니다.</div>;
   }
 
-  return (
-    <div className="post-container">
+
+  if (userCategory == '자유게시판') {
+    return (
+      <div className="post-container">
+          <Header />
+          <h1>{post.title}</h1>
+          <p>{post.content}</p>
+          {post.imageUrl && (
+          <img src={post.imageUrl} alt="Post" className="post-image" />
+          )}
+
+          <div className="comment-container">
+              <h2>댓글</h2>
+              <textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="댓글을 입력하세요"
+              ></textarea>
+              <button onClick={handleAddComment}>댓글 추가</button>
+              <button onClick={handleUpdatePost}>포스트 수정</button>
+              <button onClick={handleDeletePost}>포스트 삭제</button>
+              <div>
+                  {comments.map((c) => (
+                      <div key={c.id} className="comment">
+                          <img src={c.user.profileImageUrl} alt="Profile" className="profile-image" />
+                          {editingCommentId === c.id ? (
+                              <div>
+                                  <textarea
+                                      value={editingCommentContent}
+                                      onChange={(e) => setEditingCommentContent(e.target.value)}
+                                      placeholder="댓글을 수정하세요"
+                                  ></textarea>
+                                  <div className="comment-buttons">
+                                      <button className="edit-button" onClick={() => handleUpdateComment(c.id)}>저장</button>
+                                      <button onClick={() => setEditingCommentId(null)}>취소</button>
+                                  </div>
+                              </div>
+                          ) : (
+                              <div>
+                                  <p>{c.content} {c.user.userid}</p>
+                                  <div className="comment-buttons">
+                                      <button className="edit-button" onClick={() => {
+                                          setEditingCommentId(c.id);
+                                          setEditingCommentContent(c.content);
+                                      }}>수정</button>
+                                      <button className="delete-button" onClick={() => handleDeleteComment(c.id)}>삭제</button>
+                                  </div>
+                              </div>
+                          )}
+                      </div>
+                  ))}
+              </div>
+          </div>
+      </div>
+    );
+    // 
+  } else if (userCategory == '공감게시판') {
+    return (
+      <div className="post-container">
         <Header />
         <h1>{post.title}</h1>
         <p>{post.content}</p>
         {post.imageUrl && (
-        <img src={post.imageUrl} alt="Post" className="post-image" />
+          <img src={post.imageUrl} alt="Post" className="post-image" />
         )}
-
+    
+        {/* Recommendation button */}
+        {post.likes}
+        <button onClick={handleLike}>추천</button>
+        {post.dislikes}
+        <button onClick={handleDisLike}>비추천</button>
+    
         <div className="comment-container">
-            <h2>댓글</h2>
-            <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="댓글을 입력하세요"
-            ></textarea>
-            <button onClick={handleAddComment}>댓글 추가</button>
-            <button onClick={handleUpdatePost}>포스트 수정</button>
-            <button onClick={handleDeletePost}>포스트 삭제</button>
-            <div>
-                {comments.map((c) => (
-                    <div key={c.id} className="comment">
-                        <img src={c.user.profileImageUrl} alt="Profile" className="profile-image" />
-                        {editingCommentId === c.id ? (
-                            <div>
-                                <textarea
-                                    value={editingCommentContent}
-                                    onChange={(e) => setEditingCommentContent(e.target.value)}
-                                    placeholder="댓글을 수정하세요"
-                                ></textarea>
-                                <div className="comment-buttons">
-                                    <button className="edit-button" onClick={() => handleUpdateComment(c.id)}>저장</button>
-                                    <button onClick={() => setEditingCommentId(null)}>취소</button>
-                                </div>
-                            </div>
-                        ) : (
-                            <div>
-                                <p>{c.content} {c.user.userid}</p>
-                                <div className="comment-buttons">
-                                    <button className="edit-button" onClick={() => {
-                                        setEditingCommentId(c.id);
-                                        setEditingCommentContent(c.content);
-                                    }}>수정</button>
-                                    <button className="delete-button" onClick={() => handleDeleteComment(c.id)}>삭제</button>
-                                </div>
-                            </div>
-                        )}
+          <h2>댓글</h2>
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="댓글을 입력하세요"
+          ></textarea>
+          <button onClick={handleAddComment}>댓글 추가</button>
+          <button onClick={handleUpdatePost}>포스트 수정</button>
+          <button onClick={handleDeletePost}>포스트 삭제</button>
+          <div>
+            {comments.map((c) => (
+              <div key={c.id} className="comment">
+                <img src={c.user.profileImageUrl} alt="Profile" className="profile-image" />
+                {editingCommentId === c.id ? (
+                  <div>
+                    <textarea
+                      value={editingCommentContent}
+                      onChange={(e) => setEditingCommentContent(e.target.value)}
+                      placeholder="댓글을 수정하세요"
+                    ></textarea>
+                    <div className="comment-buttons">
+                      <button className="edit-button" onClick={() => handleUpdateComment(c.id)}>저장</button>
+                      <button onClick={() => setEditingCommentId(null)}>취소</button>
                     </div>
-                ))}
-            </div>
+                  </div>
+                ) : (
+                  <div>
+                    <p>{c.content} {c.user.userid}</p>
+                    <div className="comment-buttons">
+                      <button className="edit-button" onClick={() => {
+                        setEditingCommentId(c.id);
+                        setEditingCommentContent(c.content);
+                      }}>수정</button>
+                      <button className="delete-button" onClick={() => handleDeleteComment(c.id)}>삭제</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-    </div>
-);
-};
+      </div>
+    );    
+  };
+}
+
 
 export default PostPage;

@@ -103,6 +103,33 @@ const MyPage = () => {
         }
     };
     
+    // 프로필 이미지 업로드 처리
+    const handleImageUpload = async (event) => {
+        const imageFile = event.target.files[0]; // 선택된 이미지 파일 가져오기
+        const formData = new FormData(); // FormData 객체 생성
+        formData.append('profileImage', imageFile); // FormData에 이미지 파일 추가
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/users/me/profile`, {
+                method: 'PUT',
+                body: formData,
+                credentials: 'include' // 쿠키를 포함하여 요청
+            });
+
+          
+            console.log(response.ok)
+            if (response.ok) {
+                // 이미지 업로드 성공 시 프로필 이미지 업데이트
+                fetchUserProfileImage(); // 이미지 업로드 후 프로필 이미지를 다시 가져와서 상태를 업데이트
+            } else {
+                console.error('Failed to upload profile image');
+            }
+        } catch (error) {
+            console.error('Error uploading profile image:', error);
+        }
+    };
+
+
 
     // 드롭다운 Open Close 코드
     const toggleDropdown = () => {
@@ -134,6 +161,9 @@ const MyPage = () => {
                     ) : (
                         <p>Loading profile image...</p>
                     )} {/* 프로필 이미지 추가 */}
+
+                    <input type="file" accept="image/*" onChange={handleImageUpload} /> {/* 이미지 업로드 입력 필드 추가 */}
+                    
                     <div className="user-details">
                         <div className="nickname-container">
                             <p className="nickname">
