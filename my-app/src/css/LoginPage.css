@@ -51,9 +51,9 @@
     background-color: #0056b3;
 }
 
-p {
-    margin-top: 15px;
-    text-align: center;
+.loginpage-style input, .loginpage-style button {
+    border-radius: 10px;
+    margin-bottom: 10px;
 }
 
 a {
