@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../components/Auth/AuthContext';
-import Header from '../components/common/Header';
-import '../css/PostWrite.css';
 
 const PostWrite = () => {
     const navigate = useNavigate();
-    const { isLogin, userCategory } = useAuth();
+    const { isLogin, userId, userCategory } = useAuth();
     const { id } = useParams();
 
     const [title, setTitle] = useState('');
@@ -139,27 +137,27 @@ const PostWrite = () => {
 
     return (
         <div>
-            <div className="post-write-container">
-                <Header />
-                <h1>{id ? '글 수정' : '글쓰기'}</h1>
-                <form onSubmit={handleSubmit}>
+            <h1>{id ? '글 수정' : '글쓰기'}</h1>
+            <form onSubmit={handleSubmit}>
                 {error && <div style={{ color: 'red' }}>{error}</div>}
                 {success && <div style={{ color: 'green' }}>{success}</div>}
+                
                 <div>
-                    <input placeholder="제목" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                    <label>제목:</label>
+                    <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
                 </div>
                 <div>
-                    <textarea placeholder="내용" value={content} onChange={(e) => setContent(e.target.value)} />
+                    <label>내용:</label>
+                    <textarea value={content} onChange={(e) => setContent(e.target.value)} />
                 </div>
                 <div>
                     <label>이미지:</label>
                     <input type="file" onChange={handleFileChange} />
                 </div>
-                <button className="write" type="submit" disabled={loading}>
+                <button type="submit" disabled={loading}>
                     {loading ? '제출 중...' : id ? '수정하기' : '글쓰기'}
                 </button>
             </form>
-        </div>
         </div>
     );
 };
