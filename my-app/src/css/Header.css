@@ -9,6 +9,13 @@
     color: #000000;
 }
 
+.header-moreleft {
+    display: flex;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+}
+
 .header-left {
     display: flex;
     align-items: center;
