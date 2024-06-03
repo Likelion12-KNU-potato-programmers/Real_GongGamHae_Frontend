@@ -117,6 +117,7 @@ const MyPage = () => {
             });
 
           
+            
             console.log(response.ok)
             if (response.ok) {
                 // 이미지 업로드 성공 시 프로필 이미지 업데이트

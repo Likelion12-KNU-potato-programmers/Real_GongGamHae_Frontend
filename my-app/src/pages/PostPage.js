@@ -395,7 +395,7 @@ const handleDisLike = async () => {
               <div>
                   {comments.map((c) => (
                       <div key={c.id} className="comment">
-                          <img src={c.profileImageUrl} alt="Profile" className="profile-image" />
+                          <img src={c.user.profileImageUrl} className="profile-image" />
                           {editingCommentId === c.id ? (
                               <div>
                                   <textarea
