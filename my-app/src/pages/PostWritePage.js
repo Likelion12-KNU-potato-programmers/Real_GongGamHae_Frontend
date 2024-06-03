@@ -18,7 +18,6 @@ const PostWrite = () => {
     const [initialized, setInitialized] = useState(false);
 
     useEffect(() => {
-        // Check login status and set initialized to true after checking
         if (!isLogin) {
             navigate('/loginpage');
         } else {
@@ -101,8 +100,6 @@ const PostWrite = () => {
             }
         }
 
-        console.log(postEndpoint)
-
         const formData = new FormData();
         const post = new Blob([JSON.stringify({ title: title, content: content })], {
             type: 'application/json',
@@ -121,7 +118,7 @@ const PostWrite = () => {
             });
 
             if (!response.ok) {
-                throw new Error(`Failed to ${id ? 'update' : '1create'} post`);
+                throw new Error(`Failed to ${id ? 'update' : 'create'} post`);
             }
 
             const postData = await response.text();
@@ -140,26 +137,25 @@ const PostWrite = () => {
     return (
         <div>
             <div className="post-write-container">
-                <Header />
+            <Header />
                 <h1>{id ? '글 수정' : '글쓰기'}</h1>
                 <form onSubmit={handleSubmit}>
-                {error && <div style={{ color: 'red' }}>{error}</div>}
-                {success && <div style={{ color: 'green' }}>{success}</div>}
-                <div>
-                    <input placeholder="제목" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                </div>
-                <div>
-                    <textarea placeholder="내용" value={content} onChange={(e) => setContent(e.target.value)} />
-                </div>
-                <div>
-                    <label>이미지:</label>
-                    <input type="file" onChange={handleFileChange} />
-                </div>
-                <button className="write" type="submit" disabled={loading}>
-                    {loading ? '제출 중...' : id ? '수정하기' : '글쓰기'}
-                </button>
-            </form>
-        </div>
+                    {error && <div className="error-message">{error}</div>}
+                    {success && <div className="success-message">{success}</div>}
+                    <div className="PostWrite-form-group">
+                        <input className="PostWrite" placeholder = "제목" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                    </div>
+                    <div className="PostWrite-form-group">
+                        <textarea className = "PostWrite" placeholder="내용을 입력하세요..." value={content} onChange={(e) => setContent(e.target.value)} />
+                    </div>
+                    <div className="input-file-wrapper">
+                        <input type="file" onChange={handleFileChange} />
+                        <button type="submit" className="write-button" disabled={loading}>
+                            {loading ? '제출 중...' : id ? '수정하기' : '글쓰기'}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

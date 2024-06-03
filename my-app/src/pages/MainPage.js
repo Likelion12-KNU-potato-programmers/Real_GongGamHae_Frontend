@@ -66,7 +66,7 @@ const MainPage = () => {
         return (
             <div className="main-container">
                 <Header />
-                <h1 className="main-title">메인 페이지</h1>
+                <h1 className="main-title">{selectedCategory}</h1>
                 <div className="categories-container">
                     {categories.map((category) => (
                         <button
@@ -96,7 +96,7 @@ const MainPage = () => {
                                     <p className="post-content">{post.content}</p>
                                     <p className="post-author">작성자: {post.userInfo.userAccount}</p>
                                     <p className="post-comment-count">댓글 수: {post.commentCount}</p>
-                                    <p className='post-image'> <img src={post.imageUrl}/> </p>
+                                    <p className='post-image'><img src={post.imageUrl}/> </p>
                                 </Link>
                             </li>
                         ))}
@@ -114,7 +114,7 @@ const MainPage = () => {
         return (
             <div className="main-container">
                 <Header />
-                <h1 className="main-title">메인 페이지</h1>
+                <h1 className="main-title">{selectedCategory}</h1>
                 <div className="categories-container">
                     {categories.map((category) => (
                         <button
@@ -163,7 +163,7 @@ const MainPage = () => {
         return (
             <div className="main-container">
                 <Header />
-                <h1 className="main-title">메인 페이지</h1>
+                <h1 className="main-title">{selectedCategory}</h1>
                 <div className="categories-container">
                     {categories.map((category) => (
                         <button
