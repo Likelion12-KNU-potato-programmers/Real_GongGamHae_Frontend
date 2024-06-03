@@ -15,8 +15,9 @@ const LoginPage = () => {
         e.preventDefault();
     
         const formData = {
-            userAccount: userid,
+            userid: userid,
             password: password,
+            user: userid,
         };
     
         try {
@@ -45,14 +46,11 @@ const LoginPage = () => {
                     credentials: 'include' // 쿠키를 포함하여 요청
                 });
 
-                console.log(nicknameResponse)
+                console.log(nicknameResponse.ok)
                 if (nicknameResponse.ok) {
                     const nicknameData = await nicknameResponse.json(); // JSON으로 파싱
-                    login(nicknameData.userAccount, nicknameData.nickname)
+                    login(userid, nicknameData.nickname)
                     setNickname(nicknameData.nickname); // 닉네임을 상태로 설정
-                    setUserid(nicknameData.userAccount)
-                    console.log(nicknameData)
-
                 } else {
                     console.error('닉네임 가져오기 실패:', nicknameResponse.statusText);
                     // 실패 시 적절한 오류 처리
@@ -66,15 +64,13 @@ const LoginPage = () => {
     
     return (
         <div className="login-container">
-            <h2>로그인</h2>
-            <form className="login-form" onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>ID:</label>
-                    <input type="text" value={userid} onChange={(e) => setUserid(e.target.value)} />
+            <h2 className='title'>공대감성 감별해드립니다<br></br>줄여서 공.감.해.</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <input type="text" className="form-group" placeholder='아이디' value={userid} onChange={(e) => setUserid(e.target.value)} />
                 </div>
-                <div className="form-group">
-                    <label>Password:</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <div>
+                    <input type="password" className="form-group" placeholder='비밀번호' value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <button className="login-button" type="submit">로그인</button>
             </form>
