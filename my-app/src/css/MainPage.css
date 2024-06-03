@@ -1,0 +1,141 @@
+/* MainPage.css */
+
+.main-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    /* display: flex; */
+}
+
+.main-title {
+    font-size: 24px;
+    font-weight: bold;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #D6D6D6;
+    border-top: 1px solid #D6D6D6;
+}
+
+.categories-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid black;
+}
+
+.category-button {
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    /* transition: background-color 0.3s; */
+}
+
+.category-button.selected {
+    border-bottom: 3px solid black;
+}
+
+.write-link {
+    display: block;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: black;
+    background-color: #D6D6D6;
+    border-radius: 30px;
+    text-align: center;
+    padding: 5px 10px;
+    display: inline-block;
+}
+
+.post-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.posts-list {
+    list-style: none;
+    padding: 0;
+}
+
+.post-item {
+    margin-bottom: 20px;
+    border: 1px solid #D6D6D6;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.post-link {
+    text-decoration: none;
+    color: #333;
+}
+
+.post-link:hover {
+    color: #007bff;
+}
+
+.post-non-image {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column; 
+}
+
+.post-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.post-texts {
+    text-align: left;
+}
+
+.post-content {
+    max-height: 40px;
+    max-width: 698px;
+    overflow-y: hidden;
+}
+
+.post-details p {
+    display: flex;
+}
+
+.post-author, .post-comment-count {
+    float: left;
+    margin-right: 10px; /* 적절한 여백 조절 */
+}
+
+/* .post-good {
+    display: ;
+} */
+
+.post-image {
+    margin-bottom: 20px;
+    width: 100px;
+    height: 100px;
+    /* justify-content: center; 
+    align-items: center; */
+    margin-left: auto;
+}
+
+.post-image img {
+    width: 100%;
+    height: 100%;
+}
+
+.pagination {
+    padding-bottom: 20px;
+    margin-right: 10px;
+    display: flex;
+}
+
+.pagination button {
+    margin-right: 10px;
+    align-content: center;
+}
+
+.sidebar {
+    width: 200px; 
+    margin-left: 20px;
+}

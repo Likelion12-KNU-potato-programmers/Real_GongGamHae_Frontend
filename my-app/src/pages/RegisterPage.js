@@ -1,0 +1,85 @@
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import '../css/RegisterPage.css'; // CSS 파일 불러오기
+
+const RegisterPage = () => {
+    const navigate = useNavigate();
+
+    const [id, setId] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [nickname, setNickname] = useState('');
+    const [profileImage, setProfileImage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (password !== confirmPassword) {
+            alert('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        const formData = new FormData();
+        const user = JSON.stringify({
+            userAccount: id,
+            password: password,
+            confirmPassword: confirmPassword,
+            nickname: nickname
+        });
+        formData.append('user', new Blob([user], { type: 'application/json' }));
+        if (profileImage) {
+            formData.append('profileImage', profileImage);
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/api/auth/register', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(errorMessage);
+            }
+
+            const data = await response.text();
+            console.log('Success:', data);
+            alert('회원가입이 완료되었습니다.');
+            navigate('/loginPage');
+        } catch (error) {
+            setErrorMessage(error.message);
+            console.error('Error:', error);
+        }
+    };
+
+    return (
+        <div className="register-container">
+            <h2 className='title'>회원가입</h2>
+            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+            <form onSubmit={handleSubmit}>
+                <div className='registerpage-style'>
+                    <div className="form-group-image">
+                        프로필 이미지 :  <input type="file" onChange={(e) => setProfileImage(e.target.files[0])} />
+                    </div>
+                    <div>
+                        <input className="register-form-group" type="text" placeholder='아이디' value={id} onChange={(e) => setId(e.target.value)} />
+                    </div>
+                    <div>
+                        <input className="register-form-group" type="text" placeholder='닉네임' value={nickname} onChange={(e) => setNickname(e.target.value)} />
+                    </div>
+                    <div>
+                        <input className="register-form-group" type="password" placeholder='비밀번호' value={password} onChange={(e) => setPassword(e.target.value)} />
+                    </div>
+                    <div>
+                        <input className="register-form-group" type="password" placeholder='비밀번호 확인' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                    </div>
+                </div>
+                <button type="submit" className="submit-button">가입하기</button>
+            </form>
+            <p className="link">이미 계정이 있으신가요? <Link to="/loginPage">여기를 클릭하여 로그인하세요</Link>.</p>
+        </div>
+    );
+};
+
+export default RegisterPage;
