@@ -1,0 +1,66 @@
+/* MainPage.css */
+
+.main-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.main-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.categories-container {
+    margin-bottom: 20px;
+}
+
+.category-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.category-button.selected {
+    background-color: #0056b3;
+}
+
+.write-link {
+    display: block;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.posts-list {
+    list-style: none;
+    padding: 0;
+}
+
+.post-item {
+    margin-bottom: 20px;
+}
+
+.post-link {
+    text-decoration: none;
+    color: #333;
+}
+
+.post-link:hover {
+    color: #007bff;
+}
+
+.post-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.post-content {
+    color: #666;
+}
