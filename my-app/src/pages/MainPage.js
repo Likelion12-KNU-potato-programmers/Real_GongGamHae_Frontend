@@ -20,6 +20,10 @@ const MainPage = () => {
     const [categoryEndpoint, setCategoryEndpoint] = useState('jayuposts');
     const [endpoint, setEndpoint] = useState('');
 
+    const [currentPage, setCurrentPage] = useState(0);
+    const postsPerPage = 10;
+
+
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -44,6 +48,10 @@ const MainPage = () => {
                     data = data.filter(post => post.likes >= 1);
                 }
 
+                
+                // Sort posts by createdAt in descending order
+                data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
                 setPosts(data);
                 setLoading(false);
                 setCategoryEndpoint(endpoint);
@@ -62,11 +70,23 @@ const MainPage = () => {
     };
 
 
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    // Calculate indexes for posts to display based on current page
+    const indexOfLastPost = (currentPage + 1) * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+    
+
     if (selectedCategory == '자유게시판') {
         return (
             <div className="main-container">
                 <Header />
-                <h1 className="main-title">{selectedCategory}</h1>
+                <h1 className="main-title">메인 페이지</h1>
                 <div className="categories-container">
                     {categories.map((category) => (
                         <button
@@ -85,22 +105,31 @@ const MainPage = () => {
     
                 {loading ? (
                     <p>Loading...</p>
-                ) : posts.length === 0 ? (
+                ) : currentPosts.length === 0 ? (
                     <p>No posts found for selected category</p>
                 ) : (
+                    <div>
                     <ul className="posts-list">
-                        {posts.map((post) => (
+                        {currentPosts.map((post) => (
                             <li key={post.id} className="post-item">
                                 <Link to={`/api/${categoryEndpoint}/${post.id}`} className="post-link">
                                     <h2 className="post-title">{post.title}</h2>
                                     <p className="post-content">{post.content}</p>
                                     <p className="post-author">작성자: {post.userInfo.userAccount}</p>
                                     <p className="post-comment-count">댓글 수: {post.commentCount}</p>
-                                    <p className='post-image'><img src={post.imageUrl}/> </p>
+                                    <p className='post-image'> <img src={post.imageUrl}/> </p>
+                                    <p> 작성 시간 : {post.createdAt}</p>
                                 </Link>
                             </li>
                         ))}
                     </ul>
+                    {/* Pagination */}
+                    <div className="pagination">
+                        {Array.from({ length: Math.ceil(posts.length / postsPerPage) }, (_, index) => (
+                            <button key={index} onClick={() => handlePageChange(index)}>{index + 1}</button>
+                        ))}
+                    </div>
+                    </div>
                 )}
 
 
@@ -114,7 +143,7 @@ const MainPage = () => {
         return (
             <div className="main-container">
                 <Header />
-                <h1 className="main-title">{selectedCategory}</h1>
+                <h1 className="main-title">메인 페이지</h1>
                 <div className="categories-container">
                     {categories.map((category) => (
                         <button
@@ -133,11 +162,12 @@ const MainPage = () => {
     
                 {loading ? (
                     <p>Loading...</p>
-                ) : posts.length === 0 ? (
+                ) : currentPosts.length === 0 ? (
                     <p>No posts found for selected category</p>
                 ) : (
+                    <div>
                     <ul className="posts-list">
-                        {posts.map((post) => (
+                        {currentPosts.map((post) => (
                             <li key={post.id} className="post-item">
                                 <Link to={`/api/${categoryEndpoint}/${post.id}`} className="post-link">
                                     <h2 className="post-title">{post.title}</h2>
@@ -146,10 +176,18 @@ const MainPage = () => {
                                     <p className="post-comment-count">댓글 수: {post.commentCount}</p>
                                     <p className='post-image'> <img src={post.imageUrl}/> </p>
                                     <p className='likes'> 추천 수 : {post.likes} / 비추천 수 : {post.dislikes} </p>
+                                    <p> 작성 시간 : {post.createdAt}</p>
                                 </Link>
                             </li>
                         ))}
                     </ul>
+                    {/* Pagination */}
+                    <div className="pagination">
+                        {Array.from({ length: Math.ceil(posts.length / postsPerPage) }, (_, index) => (
+                            <button key={index} onClick={() => handlePageChange(index)}>{index + 1}</button>
+                        ))}
+                    </div>
+                    </div>
                 )}
 
                 
@@ -163,7 +201,7 @@ const MainPage = () => {
         return (
             <div className="main-container">
                 <Header />
-                <h1 className="main-title">{selectedCategory}</h1>
+                <h1 className="main-title">메인 페이지</h1>
                 <div className="categories-container">
                     {categories.map((category) => (
                         <button
@@ -180,11 +218,12 @@ const MainPage = () => {
     
                 {loading ? (
                     <p>Loading...</p>
-                ) : posts.length === 0 ? (
+                ) : currentPosts.length === 0 ? (
                     <p>No posts found for selected category</p>
                 ) : (
+                    <div>
                     <ul className="posts-list">
-                        {posts.map((post) => (
+                        {currentPosts.map((post) => (
                             <li key={post.id} className="post-item">
                                 <Link to={`/api/${categoryEndpoint}/${post.id}`} className="post-link">
                                     <h2 className="post-title">{post.title}</h2>
@@ -197,6 +236,13 @@ const MainPage = () => {
                             </li>
                         ))}
                     </ul>
+                    {/* Pagination */}
+                    <div className="pagination">
+                        {Array.from({ length: Math.ceil(posts.length / postsPerPage) }, (_, index) => (
+                            <button key={index} onClick={() => handlePageChange(index)}>{index + 1}</button>
+                        ))}
+                    </div>
+                    </div>
                 )}
     
                 <aside className="sidebar">

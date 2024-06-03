@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '../Auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import logoImage from '../../image/logo.png'; // 로고 이미지 가져오기
 import myPageImage from '../../image/mypageIcon.png'; // 이미지 파일 가져오기
 
 import '../../css/Header.css';
@@ -28,6 +29,9 @@ const Header = () => {
 
     return (
         <header className="header">
+            <div className="header-moreleft">
+                <img src={logoImage} onClick={handleLogoClick} alt="logo" class="resized-image"/>
+            </div>
             <div className="header-left" onClick={handleLogoClick}>
                 <span className="logo-text">공대 감성 판별해드립니다<br/>
                 줄여서 공.감.해.</span>

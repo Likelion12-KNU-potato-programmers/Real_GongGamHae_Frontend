@@ -57,9 +57,6 @@ const PostPage = () => {
       }
     };
 
-
-
-    // 추천 갱신 코드
     const likes = async () => {
       
     };
@@ -328,13 +325,11 @@ const handleDisLike = async () => {
 
         // Fetch the post to check the author
         const postResponse = await fetch(deleteEndpoint);
-        console.log(1111,postResponse.ok)
         if (!postResponse.ok) {
             throw new Error('Failed to fetch post for verification');
         }
         const postData = await postResponse.json();
 
-        console.log(postData)
         console.log(postData.userInfo.userAccount)
         console.log(userId)
         // Check if the logged-in user is the author
@@ -350,8 +345,6 @@ const handleDisLike = async () => {
 
         });
 
-        console.log(response.ok)
-
         if (response.ok) {
             // 삭제가 성공했을 경우 알림을 띄우고 삭제를 진행
             alert('삭제되었습니다');
@@ -363,7 +356,7 @@ const handleDisLike = async () => {
         }
     } catch (error) {
         console.error('Error deleting post:', error);
-        alert('11삭제 권한이 없습니다');
+        alert('삭제 권한이 없습니다');
     }
   };
 
@@ -466,7 +459,7 @@ const handleDisLike = async () => {
           <div>
             {comments.map((c) => (
               <div key={c.id} className="comment">
-                <img src={c.user.profileImage} className="profile-image" />
+                <img src={c.user.profileImage} alt="Profile" className="profile-image" />
                 {editingCommentId === c.id ? (
                   <div>
                     <textarea
@@ -483,7 +476,6 @@ const handleDisLike = async () => {
                   <div>
                     <p>{c.content} {c.user.userAccount}</p>
                     <p> {c.createdAt}</p>
-
                     <div className="comment-buttons">
                       <button className="edit-button" onClick={() => {
                         setEditingCommentId(c.id);
@@ -529,7 +521,7 @@ const handleDisLike = async () => {
           <div>
             {comments.map((c) => (
               <div key={c.id} className="comment">
-                <img src={c.user.profileImage} className="profile-image" />
+                <img src={c.user.profileImage} alt="Profile" className="profile-image" />
                 {editingCommentId === c.id ? (
                   <div>
                     <textarea
@@ -546,7 +538,6 @@ const handleDisLike = async () => {
                   <div>
                     <p>{c.content} {c.user.userAccount}</p>
                     <p> {c.createdAt}</p>
-
                     <div className="comment-buttons">
                       <button className="edit-button" onClick={() => {
                         setEditingCommentId(c.id);

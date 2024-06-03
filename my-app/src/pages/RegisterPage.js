@@ -25,7 +25,7 @@ const RegisterPage = () => {
             userAccount: id,
             password: password,
             confirmPassword: confirmPassword,
-            nickname: nickname,
+            nickname: nickname
         });
         formData.append('user', new Blob([user], { type: 'application/json' }));
         if (profileImage) {
@@ -55,28 +55,25 @@ const RegisterPage = () => {
 
     return (
         <div className="register-container">
-            <h2>회원가입</h2>
+            <h2 className='title'>회원가입</h2>
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-            <form onSubmit={handleSubmit} className="register-form">
-                <div className="form-group">
-                    <label>아이디:</label>
-                    <input type="text" value={id} onChange={(e) => setId(e.target.value)} />
-                </div>
-                <div className="form-group">
-                    <label>닉네임:</label>
-                    <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} />
-                </div>
-                <div className="form-group">
-                    <label>비밀번호:</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <div className="form-group">
-                    <label>비밀번호 확인:</label>
-                    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-                </div>
-                <div className="form-group">
-                    <label>프로필 이미지:</label>
-                    <input type="file" onChange={(e) => setProfileImage(e.target.files[0])} />
+            <form onSubmit={handleSubmit}>
+                <div className='registerpage-style'>
+                    <div className="form-group-image">
+                        프로필 이미지 :  <input type="file" onChange={(e) => setProfileImage(e.target.files[0])} />
+                    </div>
+                    <div>
+                        <input className="register-form-group" type="text" placeholder='아이디' value={id} onChange={(e) => setId(e.target.value)} />
+                    </div>
+                    <div>
+                        <input className="register-form-group" type="text" placeholder='닉네임' value={nickname} onChange={(e) => setNickname(e.target.value)} />
+                    </div>
+                    <div>
+                        <input className="register-form-group" type="password" placeholder='비밀번호' value={password} onChange={(e) => setPassword(e.target.value)} />
+                    </div>
+                    <div>
+                        <input className="register-form-group" type="password" placeholder='비밀번호 확인' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                    </div>
                 </div>
                 <button type="submit" className="submit-button">가입하기</button>
             </form>
