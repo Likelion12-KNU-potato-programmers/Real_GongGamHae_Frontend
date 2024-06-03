@@ -44,15 +44,10 @@ const AuthProvider = ({ children }) => {
                 });
             }
         } else {
-            navigate('/LoginPage');
+            navigate('/');
         }
     }, []);
 
-    useEffect(() => {
-        if (!authState.isLogin) {
-            navigate('/LoginPage');
-        }
-    }, [authState.isLogin, navigate]);
 
 
     const login = (userId, nickname, userCategory) => {
