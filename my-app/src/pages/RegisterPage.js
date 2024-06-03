@@ -58,20 +58,22 @@ const RegisterPage = () => {
             <h2 className='title'>회원가입</h2>
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
             <form onSubmit={handleSubmit}>
-                <div className="form-group-image">
-                    프로필 이미지 :  <input type="file" onChange={(e) => setProfileImage(e.target.files[0])} />
-                </div>
-                <div>
-                    <input className="form-group" type="text" placeholder='아이디' value={id} onChange={(e) => setId(e.target.value)} />
-                </div>
-                <div>
-                    <input className="form-group" type="text" placeholder='닉네임' value={nickname} onChange={(e) => setNickname(e.target.value)} />
-                </div>
-                <div>
-                    <input className="form-group" type="password" placeholder='비밀번호' value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <div>
-                    <input className="form-group" type="password" placeholder='비밀번호 확인' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                <div className='registerpage-style'>
+                    <div className="form-group-image">
+                        프로필 이미지 :  <input type="file" onChange={(e) => setProfileImage(e.target.files[0])} />
+                    </div>
+                    <div>
+                        <input className="register-form-group" type="text" placeholder='아이디' value={id} onChange={(e) => setId(e.target.value)} />
+                    </div>
+                    <div>
+                        <input className="register-form-group" type="text" placeholder='닉네임' value={nickname} onChange={(e) => setNickname(e.target.value)} />
+                    </div>
+                    <div>
+                        <input className="register-form-group" type="password" placeholder='비밀번호' value={password} onChange={(e) => setPassword(e.target.value)} />
+                    </div>
+                    <div>
+                        <input className="register-form-group" type="password" placeholder='비밀번호 확인' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                    </div>
                 </div>
                 <button type="submit" className="submit-button">가입하기</button>
             </form>

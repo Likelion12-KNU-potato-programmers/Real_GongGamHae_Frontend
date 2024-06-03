@@ -19,7 +19,7 @@
     background-color: #f5f5f5;
 }
 
-.form-group{
+.login-form-group{
     border: none;
     display: flex;
     width: 515px;
@@ -27,7 +27,6 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    border-radius: 10px;
     background: #D6D6D6;
 }
 
@@ -51,7 +50,6 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    border-radius: 10px;
     background: #FA4A4A;
     cursor: pointer;
 }
@@ -60,9 +58,9 @@
     background-color: #0056b3;
 }
 
-p {
-    margin-top: 15px;
-    text-align: center;
+.loginpage-style input, button {
+    border-radius: 10px;
+    margin-bottom: 10px;
 }
 
 a {
