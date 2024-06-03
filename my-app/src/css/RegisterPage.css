@@ -1,15 +1,5 @@
 /* RegisterPage.css */
 
-.title {
-    color: #000;
-    text-align: center;
-    font-family: Pretendard;
-    font-size: 30px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-}
-
 .register-container {
     display: flex;
     flex-direction: column;
@@ -19,61 +9,48 @@
     background-color: #f5f5f5;
 }
 
-.register-form-group {
+.register-form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
-    border: none;
-    width: 515px;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="file"] {
     padding: 10px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    background: #D6D6D6;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
-
-.registerpage-style input[type="text"],
-.registerpage-style input[type="password"]{
-    border-radius: 10px;
-}
-
 
 .form-group input[type="file"] {
     margin-top: 5px;
 }
 
-.form-group-image {
-    color: #7d7b7b;
-    font-size: 14px;
-    flex-direction: column;
-    margin-bottom: 15px;
-    border: none;
-    width: 515px;
-    padding: 10px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 10px;
-    background: #D6D6D6;
-}
-
 .submit-button {
-    color: #FFF;
-    text-align: center;
-    font-family: Inter;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    border: none;
-    display: flex;
-    width: 535px;
     padding: 10px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 10px;
-    background: #FA4A4A;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
 }
 
@@ -99,5 +76,3 @@
 .link a:hover {
     text-decoration: underline;
 }
-
-
